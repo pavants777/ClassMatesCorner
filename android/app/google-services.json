@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "103109887432",
+    "project_id": "classmatescorner-d7a5a",
+    "storage_bucket": "classmatescorner-d7a5a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:103109887432:android:7b042ce87f208021256cfd",
+        "android_client_info": {
+          "package_name": "com.example.classmatescorner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAsdGEAFativAYJ78eZ-lQ1TatxjwL-1k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
