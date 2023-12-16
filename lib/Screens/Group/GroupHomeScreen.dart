@@ -2,6 +2,7 @@ import 'package:classmatescorner/FirebaseFunction/groupfunction.dart';
 import 'package:classmatescorner/Models/GroupModels.dart';
 import 'package:classmatescorner/Screens/Group/CreateNewGroup.dart';
 import 'package:classmatescorner/Screens/Group/GroupDesign.dart';
+import 'package:classmatescorner/Screens/LoginPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -66,9 +67,15 @@ class _GroupHomeState extends State<GroupHome> {
                   value: '1',
                   child: Row(
                     children: const [
-                      Icon(Icons.add),
+                      Icon(
+                        Icons.add,
+                        color: Colors.blue,
+                      ),
                       SizedBox(width: 10),
-                      Text('Create New Group'),
+                      Text(
+                        'Create New Group',
+                        style: TextStyle(color: Colors.blue),
+                      ),
                     ],
                   ),
                 ),
@@ -80,9 +87,15 @@ class _GroupHomeState extends State<GroupHome> {
                   value: '2',
                   child: Row(
                     children: const [
-                      Icon(Icons.exit_to_app),
+                      Icon(
+                        Icons.exit_to_app,
+                        color: Colors.blue,
+                      ),
                       SizedBox(width: 10),
-                      Text('Exit'),
+                      Text(
+                        'Exit',
+                        style: TextStyle(color: Colors.blue),
+                      ),
                     ],
                   ),
                 ),

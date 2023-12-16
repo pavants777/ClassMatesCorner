@@ -1,5 +1,7 @@
 import 'package:classmatescorner/FirebaseFunction/function.dart';
 import 'package:classmatescorner/Models/GroupModels.dart';
+import 'package:classmatescorner/Screens/Group/ChatPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class GroupDesign extends StatefulWidget {
@@ -13,10 +15,12 @@ class GroupDesign extends StatefulWidget {
 
 class _GroupDesignState extends State<GroupDesign> {
   GroupModels? group;
+  late String currentUserId;
 
   @override
   void initState() {
     super.initState();
+    currentUserId = FirebaseAuth.instance.currentUser!.uid;
     getGroup();
   }
 
@@ -24,8 +28,12 @@ class _GroupDesignState extends State<GroupDesign> {
     GroupModels demogroup = await FirebaseFunction.getGroup(widget.groupuid);
     setState(() {
       group = demogroup;
-      print(group);
     });
+  }
+
+  bool userIsInGroup() {
+    List<String>? groupUserIds = group?.users?.map((user) => user).toList();
+    return groupUserIds?.contains(currentUserId) ?? false;
   }
 
   @override
@@ -33,7 +41,36 @@ class _GroupDesignState extends State<GroupDesign> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        if (userIsInGroup()) {
+          Navigator.push(
+              (context),
+              MaterialPageRoute(
+                  builder: (context) => ChatPage(groupId: widget.groupuid)));
+        } else {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Join the Group'),
+                  content: Text("First Join The Group To Access The Content"),
+                  actions: [
+                    TextButton(
+                        onPressed: () {
+                          joinGroup();
+                          Navigator.pop(context);
+                        },
+                        child: Text('Join Group')),
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text('Close')),
+                  ],
+                );
+              });
+        }
+      },
       child: Padding(
         padding: EdgeInsets.all(10),
         child: Container(
@@ -73,20 +110,29 @@ class _GroupDesignState extends State<GroupDesign> {
                         ' ${group?.users?.length ?? 0}+ Joined',
                         style: TextStyle(
                           fontWeight: FontWeight.normal,
-                          fontSize: 15,
-                          color: const Color.fromARGB(255, 43, 55, 43),
+                          fontSize: 17,
+                          color: Color.fromARGB(255, 0, 0, 0),
                         ),
                         softWrap: false,
                       ),
                     ],
                   ),
                 ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.more_vert,
-                    color: Colors.black,
-                  ),
+                TextButton(
+                  onPressed: () {
+                    if (userIsInGroup()) {
+                      showMoreOptions();
+                    } else {
+                      joinGroup();
+                    }
+                  },
+                  child: userIsInGroup()
+                      ? const Text('Exit',
+                          style:
+                              TextStyle(color: Color.fromARGB(255, 0, 4, 255)))
+                      : const Text('Join',
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 0, 30, 255))),
                 ),
               ],
             ),
@@ -94,5 +140,21 @@ class _GroupDesignState extends State<GroupDesign> {
         ),
       ),
     );
+  }
+
+  void showMoreOptions() {
+    String userid = FirebaseAuth.instance.currentUser!.uid;
+    FirebaseFunction.removeMember(widget.groupuid, userid);
+    setState(() {
+      group?.users?.remove(userid);
+    });
+  }
+
+  void joinGroup() {
+    String userid = FirebaseAuth.instance.currentUser!.uid;
+    FirebaseFunction.addMembers(widget.groupuid, userid);
+    setState(() {
+      group?.users?.add(userid);
+    });
   }
 }
